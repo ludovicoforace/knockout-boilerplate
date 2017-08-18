@@ -16,6 +16,20 @@ class Model {
     this.match(ko.utils.arrayFilter(this.item(), (x: any) => x.toLowerCase().indexOf(search) >= 0));
     return this.match;
   }
+  sortAz() {
+    this.item.sort();
+  }
+  sortZa() {
+    this.item.sort((a, b) => {
+      if (a > b) {
+        return -1;
+      } else if (a < b) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  }
 }
 
 export function searchBox() {

@@ -1,7 +1,7 @@
 <form class="floatin" data-bind="submit: addItem">
   <div id="addition" class="col-II">
     <div class="cool-input">
-      <input type="text" placeholder="type an item" data-bind='value: newItem, valueUpdate: "afterkeydown"' />
+      <input type="text" placeholder="add an item" data-bind='value: newItem, valueUpdate: "afterkeydown"' />
     </div>
     <div class="cool-input">
       <button type="submit" data-bind="enable: newItem().length > 0">add</button>
