@@ -1,0 +1,11 @@
+.directory
+node_modules/
+tmp/
+dist/
+src/**/*.js
+
+# misc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vscode

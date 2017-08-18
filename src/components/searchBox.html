@@ -1,0 +1,22 @@
+<div>
+  <div id="criteria">
+    <ul data-bind="foreach: searchCriteria()">
+      <li data-bind="text: $data"></li>
+    </ul>
+  </div>
+  <div class="floatin">
+    <div class="cool-input">
+      <input type="text" data-bind="value: filter, valueUpdate: 'keyup'" placeholder="search an item" autocomplete="off" />
+    </div>
+    <div class="col-II">
+      <div class="cool-input">
+        <button data-bind="enable: filter().length === 0">sort A &dash; Z</button>
+      </div>
+    </div>
+    <div class="col-II">
+      <div class="cool-input">
+        <button data-bind="enable: filter().length === 0">sort Z &dash; A</button>
+      </div>
+    </div>
+  </div>
+</div>

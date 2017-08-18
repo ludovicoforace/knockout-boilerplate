@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="MobileOptimized" content="320">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="stylesheet" href="sash.css">
+  <link rel="stylesheet" href="main.css">
+  <title>Knockout Boilerplate</title>
+</head>
+
+<body>
+  <div class="pend">
+    <h1 class="title">This is a project starter for <a target="_blank" href="http://knockoutjs.com">KnockoutJS</a> using <a target="_blank" href="https://www.typescriptlang.org">Typescript</a></h1>
+    <ko-item-list 
+      params="item: animalItem, 
+        filter: animalFilter, 
+        match: animalMatch">
+    </ko-item-list>
+    <ko-search-box 
+      params="item: animalItem, 
+        filter: animalFilter, 
+        match: animalMatch">
+    </ko-search-box>
+  </div>
+  <script src="main.js"></script>
+</body>
+
+</html>

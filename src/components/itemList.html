@@ -1,0 +1,21 @@
+<form class="floatin" data-bind="submit: addItem">
+  <div id="addition" class="col-II">
+    <div class="cool-input">
+      <input type="text" placeholder="type an item" data-bind='value: newItem, valueUpdate: "afterkeydown"' />
+    </div>
+    <div class="cool-input">
+      <button type="submit" data-bind="enable: newItem().length > 0">add</button>
+    </div>
+    <div class="cool-input">
+      <button data-bind="click: removeItem, enable: activeItem().length > 0">remove</button>
+    </div>
+  </div>
+  <div id="basket" class="col-II cool-input">
+    <!-- ko ifnot: filter() !== '' -->
+    <select multiple size="8" data-bind="options: item, selectedOptions:activeItem"></select>
+    <!-- /ko -->
+    <!-- ko if: filter() !== '' -->
+    <select multiple size="8" data-bind="options: match, selectedOptions:activeItem"></select>
+    <!-- /ko -->
+  </div>
+</form>
