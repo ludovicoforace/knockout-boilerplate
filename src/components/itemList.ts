@@ -22,8 +22,8 @@ class Model {
   }
   removeItem(): void {
     this.filter('');
-    this.activeItem([]);
     this.item.removeAll(this.activeItem());
+    this.activeItem([]);
   }
 }
 
