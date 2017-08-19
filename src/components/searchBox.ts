@@ -11,15 +11,15 @@ class Model {
     this.match = params.match;
   }
 
-  searchCriteria() {
+  searchCriteria(): string {
     const search = this.filter().toLowerCase();
     this.match(ko.utils.arrayFilter(this.item(), (x: any) => x.toLowerCase().indexOf(search) >= 0));
     return this.match;
   }
-  sortAz() {
+  sortAz(): void {
     this.item.sort();
   }
-  sortZa() {
+  sortZa(): void {
     this.item.sort((a, b) => {
       if (a > b) {
         return -1;

@@ -28,7 +28,7 @@ gulp.task('build-js', function () {
     var bundler = watchify(browserify('./src/main.js', { debug: true }));
   }
   bundler
-    .transform(stringify(['.html', '.tmpl.html']))
+    .transform(stringify(['.html']))
   var bund = function () {
     return bundler
       .bundle()
