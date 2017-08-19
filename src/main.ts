@@ -1,4 +1,5 @@
 import * as ko from 'knockout';
+import { credits } from './components/credits';
 import { itemList } from './components/itemList';
 import { searchBox } from './components/searchBox';
 
@@ -8,10 +9,12 @@ export default class ViewM {
   animalMatch = ko.observableArray(['']);
   itemList: void;
   searchBox: void;
+  credits: void;
 
   constructor() {
     this.itemList = itemList();
     this.searchBox = searchBox();
+    this.credits = credits();
   }
 }
 

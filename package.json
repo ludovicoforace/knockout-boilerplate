@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "knockout": "^3.4.2",
+    "moment": "^2.18.1",
     "sash-layout": "^1.2.6",
     "typescript": "^2.4.2"
   },
