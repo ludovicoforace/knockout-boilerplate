@@ -6,6 +6,7 @@
 - Typescript
 - Less
 - Views as html transformed with browserify
+- Knockout custom elements
 - CSS autoprefixing
 - CSS reset and layout [sash-layout](https://github.com/ludovicoforace/sash-layout)
 - Production asset minification
