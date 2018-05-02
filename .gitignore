@@ -1,11 +1,13 @@
-.directory
-node_modules/
-tmp/
-dist/
-src/**/*.js
+# dependencies
+/node_modules
+
+# production
+/dist
+/build
 
 # misc
+.directory
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.vscode

@@ -1,47 +1,92 @@
 ﻿'use strict';
 const fs = require('fs');
 const gulp = require('gulp');
-const less = require('gulp-less');
-const ts = require('gulp-typescript');
-const tsProject = ts.createProject('tsconfig.json');
-const autoprefixer = require('gulp-autoprefixer');
-const uglify = require('gulp-uglify');
-const csso = require('gulp-csso');
-const imagemin = require('gulp-imagemin');
-const pump = require('pump');
-const plumber = require('gulp-plumber');
 const browserify = require('browserify');
-const watchify = require('watchify');
 const runSequence = require('run-sequence');
 const del = require('del');
+const csso = require('gulp-csso');
+const uglify = require('gulp-uglify');
+const less = require('gulp-less');
+const autoprefixer = require('gulp-autoprefixer');
+const watchify = require('watchify');
+const imagemin = require('gulp-imagemin');
 const stringify = require('stringify');
+const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
+const browserSync = require('browser-sync');
+const tsify = require("tsify");
 
-global.isDeploy = false;
+let status;
 
-gulp.task('build-js', function () {
-  if (!fs.existsSync('./dist')) {
-    fs.mkdir('./dist', function () { });
-  }
-  if (global.isDeploy) {
-    var bundler = browserify('./src/main.js');
-  } else {
-    var bundler = watchify(browserify('./src/main.js', { debug: true }));
-  }
-  bundler
-    .transform(stringify(['.html']))
-  var bund = function () {
-    return bundler
-      .bundle()
-      .on('error', function (err) { console.log('Error : ' + err.message); })
-      .pipe(fs.createWriteStream('./dist/main.js'));
+function buildBundle(inputfile, outputfile) {
+  const settings = {
+    basedir: '.',
+    debug: true,
+    entries: inputfile,
+    cache: {},
+    packageCache: {}
   };
-  if (!global.isDeploy) {
-    bundler.on('update', bund);
+  return function () {
+    if (!fs.existsSync('./dist')) {
+      fs.mkdir('./dist', function () { });
+    }
+    if (status === 'watching') {
+      var bundler = watchify(browserify(settings)
+        .plugin(tsify));
+    } else {
+      var bundler = browserify(settings)
+        .plugin(tsify);
+    }
+    bundler = bundler
+      .transform(stringify(['.html']));
+
+    function bundle() {
+      if (status === 'deployment') {
+        return bundler
+          .bundle()
+          .pipe(source(outputfile))
+          .pipe(buffer())
+          .pipe(uglify())
+          .pipe(gulp.dest('./dist'));
+      } else {
+        return bundler
+          .bundle()
+          .pipe(source(outputfile))
+          .pipe(gulp.dest('./dist'));
+      }
+    }
+
+    if (status === 'watching') {
+      bundler.on('update', bundle);
+    }
+    return bundle();
+  };
+}
+
+gulp.task('copy-static', function () {
+  const destination = gulp.dest('./dist');
+  const bundler = gulp
+    .src([
+      './src/img/*.png',
+      './src/img/*.jpg',
+      './src/img/*.gif',
+      './src/img/*.ico',
+      './src/data/*.json',
+      './src/data/*.js',
+      './src/other/*.*',
+      './src/index.html'
+    ]);
+  if (status === 'deployment') {
+    return bundler
+      .pipe(imagemin())
+      .pipe(destination);
+  } else {
+    return bundler
+      .pipe(destination);
   }
-  return bund();
 });
 
-gulp.task('build-css', function () {
+gulp.task('compile-less', function () {
   const autoprefix = autoprefixer(
     {
       browsers: ['last 99 versions'],
@@ -54,7 +99,7 @@ gulp.task('build-css', function () {
       paths: ['.', './src/less']
     }));
 
-  if (global.isDeploy) {
+  if (status === 'deployment') {
     bundler = bundler
       .pipe(autoprefix)
       .pipe(csso());
@@ -63,44 +108,11 @@ gulp.task('build-css', function () {
       .pipe(autoprefix);
   }
   return bundler
-    .pipe(gulp.dest('./dist/'));
-});
-
-gulp.task('compile-ts', function () {
-  return gulp
-    .src('./src/**/*.ts')
-    .pipe(plumber())
-    .pipe(tsProject({
-      out: 'output.js',
-      sourceMap: true
-    }))
-    .js
-    .pipe(gulp.dest('./src'));
-});
-
-gulp.task('copy-static', function () {
-  const destination = gulp.dest('./dist/');
-  const bundler = gulp
-    .src([
-      './src/img/*.png',
-      './src/img/*.jpg',
-      './src/img/*.gif',
-      './src/img/*.ico',
-      './src/data/*.*',
-      './src/index.html'
-    ]);
-  if (global.isDeploy) {
-    return bundler
-      .pipe(imagemin())
-      .pipe(destination);
-  } else {
-    return bundler
-      .pipe(destination);
-  }
+    .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('copy-html', function () {
-  const destination = gulp.dest('./dist/');
+  const destination = gulp.dest('./dist');
   const bundler = gulp
     .src('./src/index.html');
   return bundler
@@ -111,28 +123,34 @@ gulp.task('clean', function (cb) {
   return del(['./dist'], cb);
 });
 
+gulp.task('bundle', buildBundle('./src/main.ts', 'main.js'));
+
 gulp.task('default', function (cb) {
-  runSequence('compile-ts', 'build-js', 'build-css', 'copy-static', function () {
-    const server = require('./server');
-    gulp.watch('./src/**/*.ts', ['compile-ts']);
-    gulp.watch('./src/**/*.html', ['copy-html']);
-    gulp.watch('./src/**/*.less', ['build-css']);
-    cb();
+  if (status === 'deployment') {
+    runSequence('clean', ['bundle', 'compile-less', 'copy-static'], cb);
+  } else {
+    runSequence(['bundle', 'compile-less', 'copy-static'], cb);
+  }
+});
+
+gulp.task('sync-browser', ['default'], function () {
+  browserSync.init(['./dist/**'], {
+    server: {
+      baseDir: ['dist']
+    }
   });
 });
 
 gulp.task('deploy', function (cb) {
-  runSequence('set-deploy', 'compile-ts', 'build-js', 'build-css', 'copy-static', 'compress-js', cb);
+  status = 'deployment';
+  runSequence('default', cb);
 });
 
-gulp.task('compress-js', function (cb) {
-  pump([
-    gulp.src('./dist/**/*.js'),
-    uglify(),
-    gulp.dest('./dist/')
-  ], cb);
-});
-
-gulp.task('set-deploy', function () {
-  global.isDeploy = true;
+gulp.task('watch', function (cb) {
+  status = 'watching';
+  runSequence('sync-browser', function () {
+    gulp.watch('./src/**/*.html', ['copy-html']);
+    gulp.watch('./src/**/*.less', ['compile-less']);
+    cb();
+  });
 });
