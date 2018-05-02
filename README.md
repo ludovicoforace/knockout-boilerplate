@@ -5,33 +5,37 @@
 ## Features
 - Typescript
 - Less
-- Views as html transformed with browserify
+- Browserify
 - Knockout custom elements
 - CSS autoprefixing
 - CSS reset and layout [sash-layout](https://github.com/ludovicoforace/sash-layout)
+- Source Mapping
+- Browser Sync
 - Production asset minification
-- Gulp tasking
 - Image optimization
 
-## Usage
+# Live example
 
-**dev**:  
+https://ludovicoforace.github.io/knockout-boilerplate/
+
+# Usage
+
+*Development:*
 ```shell
-$ gulp
+$ npm start
 ```
 
-- Get http://localhost:3000/
-
-**clean**:  
+*Clean dist folder:*
 ```shell
-$ gulp clean
+$ npm clean
 ```
 
-Clean the /dist folder
-
-**deployment**:  
+*Build:*
 ```shell
-$ gulp deploy
+$ npm run build
 ```
 
-Minify and uglify the files into /dist
+*gh-pages Deployment:*
+```shell
+$ npm run deploy
+```
