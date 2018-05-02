@@ -27,26 +27,5 @@
     "moment": "^2.18.1",
     "sash-layout": "^1.2.6",
     "typescript": "^2.4.2"
-  },
-  "stylelint": {
-    "extends": "stylelint-config-standard",
-    "rules": {
-      "font-family-no-duplicate-names": [
-        true,
-        {
-          "ignoreFontFamilyNames": [
-            "monospace"
-          ]
-        }
-      ],
-      "selector-type-no-unknown": [
-        true,
-        {
-          "ignore": [
-            "custom-elements"
-          ]
-        }
-      ]
-    }
   }
 }
