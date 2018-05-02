@@ -41,7 +41,7 @@ function buildBundle(inputfile, outputfile) {
       .transform(stringify(['.html']));
 
     function bundle() {
-      if (status === 'deployment') {
+      if (status === 'building') {
         return bundler
           .bundle()
           .pipe(source(outputfile))
@@ -76,7 +76,7 @@ gulp.task('copy-static', function () {
       './src/other/*.*',
       './src/index.html'
     ]);
-  if (status === 'deployment') {
+  if (status === 'building') {
     return bundler
       .pipe(imagemin())
       .pipe(destination);
@@ -99,7 +99,7 @@ gulp.task('compile-less', function () {
       paths: ['.', './src/less']
     }));
 
-  if (status === 'deployment') {
+  if (status === 'building') {
     bundler = bundler
       .pipe(autoprefix)
       .pipe(csso());
@@ -126,7 +126,7 @@ gulp.task('clean', function (cb) {
 gulp.task('bundle', buildBundle('./src/main.ts', 'main.js'));
 
 gulp.task('default', function (cb) {
-  if (status === 'deployment') {
+  if (status === 'building') {
     runSequence('clean', ['bundle', 'compile-less', 'copy-static'], cb);
   } else {
     runSequence(['bundle', 'compile-less', 'copy-static'], cb);
@@ -141,8 +141,8 @@ gulp.task('sync-browser', ['default'], function () {
   });
 });
 
-gulp.task('deploy', function (cb) {
-  status = 'deployment';
+gulp.task('build', function (cb) {
+  status = 'building';
   runSequence('default', cb);
 });
 
