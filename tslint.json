@@ -8,6 +8,7 @@
     "no-angle-bracket-type-assertion": false,
     "no-console": false,
     "arrow-parens": false,
-    "no-eol-whitespace": false
+    "no-eol-whitespace": false,
+    "max-line-length": false
   }
 }
