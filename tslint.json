@@ -1,27 +1,13 @@
 {
-  "extends": "tslint:recommended",
+  "extends": "tslint:latest",
   "rules": {
-    "new-parens": true,
-    "no-arg": true,
-    "no-bitwise": true,
-    "no-conditional-assignment": true,
-    "no-consecutive-blank-lines": true,
-    "member-access": [
-      false
-    ],
-    "quotemark": [
-      false
-    ],
-    "max-line-length": [
-      false
-    ],
-    "trailing-comma": [
-      true,
-      {
-        "multiline": {
-          "functions": "never"
-        }
-      }
-    ]
+    "quotemark": false,
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    "trailing-comma": false,
+    "no-angle-bracket-type-assertion": false,
+    "no-console": false,
+    "arrow-parens": false,
+    "no-eol-whitespace": false
   }
 }
