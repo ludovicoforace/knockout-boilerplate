@@ -1,9 +1,9 @@
 import * as ko from 'knockout';
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
 
 class ViewModel {
   private getYear(): string {
-    return moment().format('YYYY');
+    return dayjs().format('YYYY');
   }
 }
 
