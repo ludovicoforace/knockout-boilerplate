@@ -16,7 +16,8 @@ const buffer = require('vinyl-buffer');
 const browserSync = require('browser-sync');
 const tsify = require("tsify");
 
-let status;
+let appStatus;
+let watchRunning;
 
 function buildBundle(inputfile, outputfile) {
   const settings = {
@@ -30,7 +31,7 @@ function buildBundle(inputfile, outputfile) {
     if (!fs.existsSync('./dist')) {
       fs.mkdir('./dist', function () { });
     }
-    if (status === 'watching') {
+    if (appStatus === 'watching') {
       var bundler = watchify(browserify(settings)
         .plugin(tsify));
     } else {
@@ -41,7 +42,7 @@ function buildBundle(inputfile, outputfile) {
       .transform(stringify(['.html']));
 
     function bundle() {
-      if (status === 'building') {
+      if (appStatus === 'building') {
         return bundler
           .bundle()
           .pipe(source(outputfile))
@@ -56,7 +57,7 @@ function buildBundle(inputfile, outputfile) {
       }
     }
 
-    if (status === 'watching') {
+    if (appStatus === 'watching') {
       bundler.on('update', bundle);
     }
     return bundle();
@@ -64,19 +65,27 @@ function buildBundle(inputfile, outputfile) {
 }
 
 gulp.task('copy-static', function () {
+  let bundler;
   const destination = gulp.dest('./dist');
-  const bundler = gulp
-    .src([
-      './src/img/*.png',
-      './src/img/*.jpg',
-      './src/img/*.gif',
-      './src/img/*.ico',
-      './src/data/*.json',
-      './src/data/*.js',
-      './src/other/*.*',
-      './src/index.html'
-    ]);
-  if (status === 'building') {
+
+  if (watchRunning) {
+    bundler = gulp
+      .src('./src/index.html');
+  } else {
+    bundler = gulp
+      .src([
+        './src/img/*.png',
+        './src/img/*.jpg',
+        './src/img/*.gif',
+        './src/img/*.ico',
+        './src/data/*.json',
+        './src/data/*.js',
+        './src/other/*.*',
+        './src/index.html'
+      ]);
+  }
+
+  if (appStatus === 'building') {
     return bundler
       .pipe(imagemin())
       .pipe(destination);
@@ -99,7 +108,7 @@ gulp.task('compile-less', function () {
       paths: ['.', './src/less']
     }));
 
-  if (status === 'building') {
+  if (appStatus === 'building') {
     bundler = bundler
       .pipe(autoprefix)
       .pipe(csso());
@@ -111,14 +120,6 @@ gulp.task('compile-less', function () {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('copy-html', function () {
-  const destination = gulp.dest('./dist');
-  const bundler = gulp
-    .src('./src/index.html');
-  return bundler
-    .pipe(destination);
-});
-
 gulp.task('clean', function (cb) {
   return del(['./dist'], cb);
 });
@@ -126,7 +127,7 @@ gulp.task('clean', function (cb) {
 gulp.task('bundle', buildBundle('./src/main.ts', 'main.js'));
 
 gulp.task('default', function (cb) {
-  if (status === 'building') {
+  if (appStatus === 'building') {
     runSequence('clean', ['bundle', 'compile-less', 'copy-static'], cb);
   } else {
     runSequence(['bundle', 'compile-less', 'copy-static'], cb);
@@ -142,14 +143,15 @@ gulp.task('sync-browser', ['default'], function () {
 });
 
 gulp.task('build', function (cb) {
-  status = 'building';
+  appStatus = 'building';
   runSequence('default', cb);
 });
 
 gulp.task('watch', function (cb) {
-  status = 'watching';
+  appStatus = 'watching';
   runSequence('sync-browser', function () {
-    gulp.watch('./src/**/*.html', ['copy-html']);
+    watchRunning = true;
+    gulp.watch('./src/**/*.html', ['copy-static']);
     gulp.watch('./src/**/*.less', ['compile-less']);
     cb();
   });

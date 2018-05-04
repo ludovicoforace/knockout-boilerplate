@@ -27,7 +27,7 @@ $ npm start
 
 *Clean dist folder:*
 ```shell
-$ npm clean
+$ npm run clean
 ```
 
 *Build:*

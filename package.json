@@ -1,7 +1,7 @@
 {
-  "name": "knockout-boilerplate",
+  "name": "knockout-app",
   "version": "0.1.0",
-  "homepage": "https://ludovicoforace.github.io/knockout-boilerplate/",
+  "homepage": "https://",
   "private": true,
   "main": "main.js",
   "devDependencies": {
@@ -9,6 +9,7 @@
     "@types/node": "^9.6.6",
     "browser-sync": "^2.23.7",
     "browserify": "^14.4.0",
+    "del": "^3.0.0",
     "eslint": "^4.19.1",
     "gh-pages": "^1.1.0",
     "gulp": "^3.9.1",
