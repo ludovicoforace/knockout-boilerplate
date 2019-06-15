@@ -166,29 +166,47 @@ ko-credits {
   }
 }
 
-@media only screen and (max-width: 1080px) {
+.pend {
+  width: 100%;
+}
+
+.col-II {
+  width: 100%;
+}
+
+ko-search-box {
+  .col-II {
+    &:last-child {
+      padding-left: 0;
+    }
+  }
+}
+
+#addition {
+  padding-right: 20px;
+
+  .cool-input {
+    &:last-child {
+      padding-bottom: 26px;
+    }
+  }
+}
+
+@media only screen and (min-width: 1075px) {
   .pend {
-    width: 100%;
+    width: 1060px;
+    padding: 0 20px;
   }
 
   .col-II {
-    width: 100%;
+    float: left;
+    width: 50%;
   }
 
   ko-search-box {
     .col-II {
       &:last-child {
-        padding-left: 0;
-      }
-    }
-  }
-
-  #addition {
-    padding-right: 0;
-
-    .cool-input {
-      &:last-child {
-        padding-bottom: 26px;
+        padding-left: 20px;
       }
     }
   }
